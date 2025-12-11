@@ -1,0 +1,7 @@
+{
+  "name": "token-note",
+  "version": "1.0.0",
+  "manifest_version": 1,
+  "icon": "/add.svg",
+  "background_url": "/background.html"
+}
