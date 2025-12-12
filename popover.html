@@ -7,7 +7,7 @@
   </head>
   <body>
     <div class="container" id="token-note-popover">
-      <div class="input-wrapper">
+      <div class="note-input-wrapper display-none">
         <textarea
           class="textarea-input"
           placeholder="Enter notes here..."
@@ -15,7 +15,9 @@
         <input type="hidden" name="item-id" id="item-id-hidden" value="" />
         <button class="button-save">Save Notes</button>
       </div>
-      <div id="notes"></div>
+      <div class="note-wrapper display-none">
+        <p id="notes"></p>
+      </div>
     </div>
     <script type="module" src="/src/popover.js"></script>
   </body>

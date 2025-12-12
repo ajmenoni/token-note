@@ -65,7 +65,7 @@ async function bootstrapPopover() {
   if (!container) return;
 
   setHiddenItemId(container, itemId);
-  // await setPopoverContent(container, itemId);
+  await setPopoverContent(container, itemId);
   attachNoteInputHandler(container, itemId);
 }
 
@@ -112,40 +112,54 @@ function focusNoteInput(input) {
 async function setPopoverContent(container, itemId) {
   const notesText = await fetchSavedNote(itemId);
 
-  const notesDiv = container.querySelector("#notes");
-  const newNoteP = document.createElement("p");
-  newNoteP.textContent = notesText || "";
+  if (!notesText) {
+    const noteInputWrapper = container.querySelector(".note-input-wrapper");
+    if (!noteInputWrapper) return;
+    const noteInput = container.querySelector(".textarea-input");
+    noteInputWrapper.classList.remove("display-none");
 
-  const removeButton = document.createElement("span");
-  removeButton.className = "remove";
-  removeButton.innerHTML = "&times";
+    focusNoteInput(noteInput);
+  } else {
+    const noteWrapper = container.querySelector(".note-wrapper");
 
-  newNoteP.appendChild(removeButton);
+    if (!noteWrapper) return;
 
-  if (notesDiv) notesDiv.append(newNoteP);
+    const notesDiv = container.querySelector("#notes");
 
-  console.log(`Note Content: ${notesText}`);
+    attachNotesListener(container);
+    const newNoteP = document.createElement("p");
+
+    newNoteP.textContent = notesText || "";
+
+    if (notesDiv) notesDiv.append(newNoteP);
+    noteWrapper.classList.remove("display-none");
+  }
 }
 
 /* =========================
    Event Binding
    ========================= */
 
-function attachNoteInputHandler(container, itemId) {
-  const noteInput = getNoteInput(container);
-  if (!noteInput) return;
+// function attachNoteInputHandler(container, itemId) {
+//   const noteInput = getNoteInput(container);
+//   if (!noteInput) return;
 
-  console.log("Note input found:", noteInput);
-  focusNoteInput(noteInput);
+//   console.log("Note input found:", noteInput);
+//   focusNoteInput(noteInput);
 
-  noteInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      // handleNoteSubmit(noteInput.value, itemId); // i'll try and use this for actual submit
-      handleNoteSubmit();
-    }
+//   noteInput.addEventListener("keydown", (e) => {
+//     if (e.key === "Enter") {
+//       // handleNoteSubmit(noteInput.value, itemId); // i'll try and use this for actual submit
+//       handleNoteSubmit();
+//     }
+//   });
+// }
+
+function attachNotesListener(container) {
+  container.addEventListener("dblclick", function (event) {
+    alert("You double clicked");
   });
 }
-
 /* =========================
    Event Handlers
    ========================= */
