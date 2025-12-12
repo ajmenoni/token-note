@@ -1,7 +1,7 @@
 import OBR from "@owlbear-rodeo/sdk";
 
 /* =========================
-   Constants / ID Builders
+   Constants
    ========================= */
 
 const EXTENSION_ID = "com.token-note";
@@ -15,7 +15,7 @@ function buildMetadataId() {
 }
 
 /* =========================
-   Public API
+   API
    ========================= */
 
 export function handleOpen(itemId, elementId) {
@@ -23,7 +23,7 @@ export function handleOpen(itemId, elementId) {
 }
 
 /* =========================
-   Popover Opening
+  Open popover
    ========================= */
 
 function openPopover(popoverId, itemId, elementId) {
@@ -43,7 +43,7 @@ function buildPopoverUrl(itemId) {
 }
 
 /* =========================
-   DOM Initialization
+   DOM Init
    ========================= */
 
 if (document.readyState === "loading") {
@@ -66,7 +66,7 @@ async function bootstrapPopover() {
 
   setHiddenItemId(container, itemId);
   await setPopoverContent(container, itemId);
-  attachNoteInputHandler(container, itemId);
+  attachSaveListener(container);
 }
 
 /* =========================
@@ -140,32 +140,27 @@ async function setPopoverContent(container, itemId) {
    Event Binding
    ========================= */
 
-// function attachNoteInputHandler(container, itemId) {
-//   const noteInput = getNoteInput(container);
-//   if (!noteInput) return;
-
-//   console.log("Note input found:", noteInput);
-//   focusNoteInput(noteInput);
-
-//   noteInput.addEventListener("keydown", (e) => {
-//     if (e.key === "Enter") {
-//       // handleNoteSubmit(noteInput.value, itemId); // i'll try and use this for actual submit
-//       handleNoteSubmit();
-//     }
-//   });
-// }
-
 function attachNotesListener(container) {
   container.addEventListener("dblclick", function (event) {
     alert("You double clicked");
+  });
+}
+
+function attachSaveListener(container) {
+  const saveButton = container.querySelector(".button-save");
+  saveButton.addEventListener("click", function (event) {
+    handleNoteSubmit(container);
   });
 }
 /* =========================
    Event Handlers
    ========================= */
 
-function handleNoteSubmit() {
-  // fetchSavedNote(itemId, note); // i wont need to fetch ill need to set metadata
+function handleNoteSubmit(container) {
+  const idEl = getHiddenItemIdInput(container);
+  const idValue = idEl.value;
+  console.log(idValue);
+
   closePopover();
 }
 
@@ -174,7 +169,7 @@ function closePopover() {
 }
 
 /* =========================
-   OBR / Data Access
+   OBR / get data
    ========================= */
 
 async function fetchSavedNote(itemId) {
