@@ -4,6 +4,7 @@ import OBR from "@owlbear-rodeo/sdk";
    Constants
    ========================= */
 
+let quill = null;
 const EXTENSION_ID = "com.token-note";
 
 function buildPopoverId() {
@@ -61,8 +62,18 @@ if (document.readyState === "loading") {
 async function bootstrapPopover() {
   const itemId = getItemIdFromUrl();
   const container = getPopoverContainer();
-
   if (!container) return;
+
+  const editorElement = document.getElementById("quill-editor");
+
+  if (editorElement && !quill) {
+    quill = new Quill("#quill-editor", {
+      theme: "snow",
+      modules: {
+        toolbar: "#quill-toolbar",
+      },
+    });
+  }
 
   setHiddenItemId(container, itemId); //I think I can remove this now
   await setPopoverContent(container, itemId);
@@ -84,12 +95,6 @@ function getItemIdFromUrl() {
 
 function getPopoverContainer() {
   return document.getElementById("token-note-popover");
-}
-
-function getNoteInput() {
-  const textareaInput = document.querySelector("textarea");
-  if (!textareaInput) return;
-  return textareaInput;
 }
 
 function getHiddenItemIdInput(container) {
@@ -122,30 +127,27 @@ function focusNoteInput(input) {
 async function setPopoverContent(container, itemId) {
   const notesText = await fetchSavedNote(itemId);
 
-  if (!notesText) {
+  if (!notesText || isQuillEmpty(notesText)) {
     const noteInputWrapper = container.querySelector(".note-input-wrapper");
     if (!noteInputWrapper) return;
-    const noteInput = container.querySelector(".textarea-input");
+    quill.setText("");
     noteInputWrapper.classList.remove("display-none");
 
-    focusNoteInput(noteInput);
+    // focusNoteInput(noteInput);
+  } else {
+    const noteWrapper = container.querySelector(".note-wrapper");
+
+    if (!noteWrapper) return;
+
+    const notesDiv = container.querySelector("#notes");
+
+    //added here because each opening of the popover is a new popover.
+    attachNotesListener(container);
+
+    if (notesDiv) notesDiv.innerHTML = notesText || "";
+
+    noteWrapper.classList.remove("display-none");
   }
-
-  const noteWrapper = container.querySelector(".note-wrapper");
-
-  if (!noteWrapper) return;
-
-  const notesDiv = container.querySelector("#notes");
-
-  //added here because each opening of the popover is a new popover.
-  attachNotesListener(container);
-
-  const newNoteP = document.createElement("p");
-
-  newNoteP.textContent = notesText || "";
-
-  if (notesDiv) notesDiv.append(newNoteP);
-  noteWrapper.classList.remove("display-none");
 }
 
 function hideContainer(el) {
@@ -183,27 +185,38 @@ function attachSaveListener(container) {
    Event Handlers
    ========================= */
 
-function handleEdit() {
+function isQuillEmpty(html) {
+  if (!html) return true;
+
+  const cleaned = html
+    .replace(/<p><br><\/p>/g, "")
+    .replace(/<p><\/p>/g, "")
+    .trim();
+
+  return cleaned.length === 0;
+}
+
+async function handleEdit() {
   // get item note&id
   const itemId = getItemIdFromUrl();
-  const itemNote = fetchSavedNote(itemId);
-
-  if (!itemNote) return;
+  const noteHtml = await fetchSavedNote(itemId);
+  if (!noteHtml) return;
+  quill.root.innerHTML = noteHtml;
+  console.log();
 
   //'close' note display
   hideContainer(getNoteDisplayWrapper());
   // 'open' text input container
   displayContainer(getNoteInputWrapper());
-
-  addNoteValueToInput();
 }
 
-async function handleNoteSubmit(container) {
-  const noteInput = getNoteInput();
-  const newNote = noteInput.value;
+async function handleNoteSubmit() {
+  const newNote = quill.root.innerHTML;
   const itemId = getItemIdFromUrl();
 
-  saveNoteText(newNote, itemId);
+  const saveValue = isQuillEmpty(newNote) ? "" : newNote;
+
+  saveNoteText(saveValue, itemId);
 
   closePopover();
 }
