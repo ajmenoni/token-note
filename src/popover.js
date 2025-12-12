@@ -78,6 +78,10 @@ async function bootstrapPopover() {
   setHiddenItemId(container, itemId); //I think I can remove this now
   await setPopoverContent(container, itemId);
   attachSaveListener(container);
+
+  if (editorElement) {
+    quill.focus();
+  }
 }
 
 /* =========================
@@ -208,6 +212,7 @@ async function handleEdit() {
   hideContainer(getNoteDisplayWrapper());
   // 'open' text input container
   displayContainer(getNoteInputWrapper());
+  quill.focus();
 }
 
 async function handleNoteSubmit() {
