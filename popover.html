@@ -7,9 +7,13 @@
   </head>
   <body>
     <div class="container" id="token-note-popover">
-      <div class="inputs">
-        <input type="text" placeholder="Add Note" />
+      <div class="input-wrapper">
+        <textarea
+          class="textarea-input"
+          placeholder="Enter notes here..."
+        ></textarea>
         <input type="hidden" name="item-id" id="item-id-hidden" value="" />
+        <button class="button-save">Save Notes</button>
       </div>
       <div id="notes"></div>
     </div>

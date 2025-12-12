@@ -35,12 +35,39 @@ p {
   padding: 5px 0;
 }
 
+.notes {
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
 .remove {
   cursor: pointer;
-  font-size: 1.2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background-color: #ad3a3a;
   color: white;
-  margin-left: 10px;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.remove:hover {
+  background-color: #ff0000;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 input {
@@ -58,6 +85,21 @@ input {
 
 .input-group input::placeholder {
   text-align: center;
+}
+
+.textarea-input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
 }
 
 a {
@@ -128,6 +170,11 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.button-save {
+  margin-top: 0.5rem;
+  background-color: burlywood;
 }
 
 @media (prefers-color-scheme: light) {

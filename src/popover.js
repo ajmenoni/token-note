@@ -65,7 +65,7 @@ async function bootstrapPopover() {
   if (!container) return;
 
   setHiddenItemId(container, itemId);
-  await setPopoverContent(container, itemId);
+  // await setPopoverContent(container, itemId);
   attachNoteInputHandler(container, itemId);
 }
 
