@@ -23,19 +23,6 @@ export function setupContextMenu() {
       const itemId = context.items[0].id;
 
       handleOpen(itemId, elementId);
-
-      // const text = prompt("Enter your note:");
-      // if (text === null) return;
-
-      // await OBR.scene.items.updateItems(context.items, (items) => {
-      //   for (let item of items) {
-      //     if (!item.metadata[`${ID}/metadata`])
-      //       item.metadata[`${ID}/metadata`] = {};
-      //     item.metadata[`${ID}/metadata`].note = text;
-      //   }
-      // });
-
-      // alert("Note saved!");
     },
   });
 

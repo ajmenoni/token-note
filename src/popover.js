@@ -64,7 +64,7 @@ async function bootstrapPopover() {
 
   if (!container) return;
 
-  setHiddenItemId(container, itemId);
+  setHiddenItemId(container, itemId); //I think I can remove this now
   await setPopoverContent(container, itemId);
   attachSaveListener(container);
 }
@@ -86,12 +86,22 @@ function getPopoverContainer() {
   return document.getElementById("token-note-popover");
 }
 
-function getNoteInput(container) {
-  return container.querySelector("input[type='text']");
+function getNoteInput() {
+  const textareaInput = document.querySelector("textarea");
+  if (!textareaInput) return;
+  return textareaInput;
 }
 
 function getHiddenItemIdInput(container) {
   return container.querySelector("#item-id-hidden");
+}
+
+function getNoteInputWrapper() {
+  return document.querySelector(".note-input-wrapper");
+}
+
+function getNoteDisplayWrapper() {
+  return document.querySelector(".note-wrapper");
 }
 
 /* =========================
@@ -119,21 +129,38 @@ async function setPopoverContent(container, itemId) {
     noteInputWrapper.classList.remove("display-none");
 
     focusNoteInput(noteInput);
-  } else {
-    const noteWrapper = container.querySelector(".note-wrapper");
-
-    if (!noteWrapper) return;
-
-    const notesDiv = container.querySelector("#notes");
-
-    attachNotesListener(container);
-    const newNoteP = document.createElement("p");
-
-    newNoteP.textContent = notesText || "";
-
-    if (notesDiv) notesDiv.append(newNoteP);
-    noteWrapper.classList.remove("display-none");
   }
+
+  const noteWrapper = container.querySelector(".note-wrapper");
+
+  if (!noteWrapper) return;
+
+  const notesDiv = container.querySelector("#notes");
+
+  //added here because each opening of the popover is a new popover.
+  attachNotesListener(container);
+
+  const newNoteP = document.createElement("p");
+
+  newNoteP.textContent = notesText || "";
+
+  if (notesDiv) notesDiv.append(newNoteP);
+  noteWrapper.classList.remove("display-none");
+}
+
+function hideContainer(el) {
+  el.classList.add("display-none");
+}
+
+function displayContainer(el) {
+  el.classList.remove("display-none");
+}
+
+async function addNoteValueToInput() {
+  const noteInput = getNoteInput();
+  const itemId = getItemIdFromUrl();
+  const noteText = await fetchSavedNote(itemId);
+  noteInput.value = noteText;
 }
 
 /* =========================
@@ -142,7 +169,7 @@ async function setPopoverContent(container, itemId) {
 
 function attachNotesListener(container) {
   container.addEventListener("dblclick", function (event) {
-    alert("You double clicked");
+    handleEdit();
   });
 }
 
@@ -156,10 +183,27 @@ function attachSaveListener(container) {
    Event Handlers
    ========================= */
 
-function handleNoteSubmit(container) {
-  const idEl = getHiddenItemIdInput(container);
-  const idValue = idEl.value;
-  console.log(idValue);
+function handleEdit() {
+  // get item note&id
+  const itemId = getItemIdFromUrl();
+  const itemNote = fetchSavedNote(itemId);
+
+  if (!itemNote) return;
+
+  //'close' note display
+  hideContainer(getNoteDisplayWrapper());
+  // 'open' text input container
+  displayContainer(getNoteInputWrapper());
+
+  addNoteValueToInput();
+}
+
+async function handleNoteSubmit(container) {
+  const noteInput = getNoteInput();
+  const newNote = noteInput.value;
+  const itemId = getItemIdFromUrl();
+
+  saveNoteText(newNote, itemId);
 
   closePopover();
 }
@@ -169,8 +213,20 @@ function closePopover() {
 }
 
 /* =========================
-   OBR / get data
+   OBR / data
    ========================= */
+
+async function saveNoteText(newNote, id) {
+  const metadataId = buildMetadataId();
+  if (newNote === null) return;
+
+  await OBR.scene.items.updateItems([id], (items) => {
+    for (let item of items) {
+      if (!item.metadata[metadataId]) item.metadata[metadataId] = {};
+      item.metadata[metadataId].note = newNote;
+    }
+  });
+}
 
 async function fetchSavedNote(itemId) {
   if (!itemId) return;
