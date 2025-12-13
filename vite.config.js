@@ -5,10 +5,4 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "/token-note/",
-  server: {
-    cors: {
-      origin: "https://www.owlbear.rodeo",
-    },
-    allowedHosts: ["dam-installing-hours-spin.trycloudflare.com"],
-  },
 });
