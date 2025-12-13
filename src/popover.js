@@ -69,6 +69,7 @@ async function bootstrapPopover() {
 
   await setPopoverContent(container, itemId);
   attachSaveListener(container);
+  attachKeyboardShortcuts(container);
 
   if (editorElement) {
     quill.focus();
@@ -143,6 +144,10 @@ function attachSaveListener(container) {
   saveButton.onclick = handleNoteSubmit;
 }
 
+function attachKeyboardShortcuts(container) {
+  container.onkeydown = handleKeyDown;
+}
+
 // **Event Handlers
 
 function isQuillEmpty(html) {
@@ -183,6 +188,17 @@ async function handleNoteSubmit() {
 
 function closePopover() {
   OBR.popover.close(buildPopoverId());
+}
+
+function handleKeyDown(event) {
+  const isSave =
+    (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s";
+
+  if (!isSave) return;
+  if (getNoteInputWrapper().classList.contains("display-none")) return;
+
+  event.preventDefault();
+  handleNoteSubmit();
 }
 
 // **data
