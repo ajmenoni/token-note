@@ -1,7 +1,8 @@
 {
-  "name": "token-note",
+  "name": "Token Note",
   "version": "1.0.0",
   "manifest_version": 1,
-  "icon": "/add.svg",
-  "background_url": "/background.html"
+  "icon": "/token-note.png",
+  "background_url": "/background.html",
+  "description": "Add quick richtext notes to items on the Character layer."
 }
