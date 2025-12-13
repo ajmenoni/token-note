@@ -1,2 +1,0 @@
-1. Add more styling to notes. I think I need to make notes div 100% wide. 
-2. Give the remove button better styling.
