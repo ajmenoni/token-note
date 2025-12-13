@@ -184,6 +184,11 @@ button:focus-visible {
   background-color: burlywood;
 }
 
+.saved-flash {
+  outline: 2px solid burlywood;
+  transition: outline 0.3s ease;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

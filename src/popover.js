@@ -183,7 +183,8 @@ async function handleNoteSubmit() {
 
   saveNoteText(saveValue, itemId);
 
-  closePopover();
+  showSavedState();
+  setTimeout(closePopover, 150);
 }
 
 function closePopover() {
@@ -199,6 +200,17 @@ function handleKeyDown(event) {
 
   event.preventDefault();
   handleNoteSubmit();
+}
+
+function showSavedState() {
+  const editor = document.getElementById("quill-editor");
+  if (!editor) return;
+
+  editor.classList.add("saved-flash");
+
+  setTimeout(() => {
+    editor.classList.remove("saved-flash");
+  }, 300);
 }
 
 // **data
