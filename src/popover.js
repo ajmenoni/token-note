@@ -1,8 +1,6 @@
 import OBR from "@owlbear-rodeo/sdk";
 
-/* =========================
-   Constants
-   ========================= */
+// **constants
 
 let quill = null;
 const EXTENSION_ID = "com.token-note";
@@ -15,17 +13,13 @@ function buildMetadataId() {
   return `${EXTENSION_ID}/metadata`;
 }
 
-/* =========================
-   API
-   ========================= */
+// **api
 
 export function handleOpen(itemId, elementId) {
   openPopover(buildPopoverId(), itemId, elementId);
 }
 
-/* =========================
-  Open popover
-   ========================= */
+// **open popover
 
 function openPopover(popoverId, itemId, elementId) {
   OBR.popover.open({
@@ -43,9 +37,7 @@ function buildPopoverUrl(itemId) {
   return `/popover.html?itemId=${itemId}`;
 }
 
-/* =========================
-   DOM Init
-   ========================= */
+// **init
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
@@ -75,7 +67,6 @@ async function bootstrapPopover() {
     });
   }
 
-  setHiddenItemId(container, itemId); //I think I can remove this now
   await setPopoverContent(container, itemId);
   attachSaveListener(container);
 
@@ -84,25 +75,17 @@ async function bootstrapPopover() {
   }
 }
 
-/* =========================
-   URL Helpers
-   ========================= */
+// **helpers
 
 function getItemIdFromUrl() {
   const params = new URLSearchParams(window.location.search);
   return params.get("itemId");
 }
 
-/* =========================
-   DOM Queries
-   ========================= */
+// **dom queries
 
 function getPopoverContainer() {
   return document.getElementById("token-note-popover");
-}
-
-function getHiddenItemIdInput(container) {
-  return container.querySelector("#item-id-hidden");
 }
 
 function getNoteInputWrapper() {
@@ -113,44 +96,31 @@ function getNoteDisplayWrapper() {
   return document.querySelector(".note-wrapper");
 }
 
-/* =========================
-   DOM Mutations
-   ========================= */
-
-function setHiddenItemId(container, itemId) {
-  const hiddenInput = getHiddenItemIdInput(container);
-  if (hiddenInput) {
-    hiddenInput.value = itemId || "";
-  }
-}
-
-function focusNoteInput(input) {
-  input.focus();
-}
+// **dom mutations
 
 async function setPopoverContent(container, itemId) {
   const notesText = await fetchSavedNote(itemId);
 
   if (!notesText || isQuillEmpty(notesText)) {
-    const noteInputWrapper = container.querySelector(".note-input-wrapper");
-    if (!noteInputWrapper) return;
-    quill.setText("");
-    noteInputWrapper.classList.remove("display-none");
+    const noteInputWrapper = getNoteInputWrapper();
 
-    // focusNoteInput(noteInput);
+    if (!noteInputWrapper) return;
+
+    quill.setText("");
+
+    displayContainer(noteInputWrapper);
   } else {
-    const noteWrapper = container.querySelector(".note-wrapper");
+    const noteWrapper = getNoteDisplayWrapper();
 
     if (!noteWrapper) return;
 
     const notesDiv = container.querySelector("#notes");
 
-    //added here because each opening of the popover is a new popover.
     attachNotesListener(container);
 
     if (notesDiv) notesDiv.innerHTML = notesText || "";
 
-    noteWrapper.classList.remove("display-none");
+    displayContainer(noteWrapper);
   }
 }
 
@@ -162,32 +132,18 @@ function displayContainer(el) {
   el.classList.remove("display-none");
 }
 
-async function addNoteValueToInput() {
-  const noteInput = getNoteInput();
-  const itemId = getItemIdFromUrl();
-  const noteText = await fetchSavedNote(itemId);
-  noteInput.value = noteText;
-}
-
-/* =========================
-   Event Binding
-   ========================= */
+// **Binding
 
 function attachNotesListener(container) {
-  container.addEventListener("dblclick", function (event) {
-    handleEdit();
-  });
+  container.ondblclick = handleEdit;
 }
 
 function attachSaveListener(container) {
   const saveButton = container.querySelector(".button-save");
-  saveButton.addEventListener("click", function (event) {
-    handleNoteSubmit(container);
-  });
+  saveButton.onclick = handleNoteSubmit;
 }
-/* =========================
-   Event Handlers
-   ========================= */
+
+// **Event Handlers
 
 function isQuillEmpty(html) {
   if (!html) return true;
@@ -201,17 +157,16 @@ function isQuillEmpty(html) {
 }
 
 async function handleEdit() {
-  // get item note&id
   const itemId = getItemIdFromUrl();
   const noteHtml = await fetchSavedNote(itemId);
-  if (!noteHtml) return;
-  quill.root.innerHTML = noteHtml;
-  console.log();
 
-  //'close' note display
+  if (!noteHtml) return;
+
+  quill.root.innerHTML = noteHtml;
+
   hideContainer(getNoteDisplayWrapper());
-  // 'open' text input container
   displayContainer(getNoteInputWrapper());
+
   quill.focus();
 }
 
@@ -230,12 +185,11 @@ function closePopover() {
   OBR.popover.close(buildPopoverId());
 }
 
-/* =========================
-   OBR / data
-   ========================= */
+// **data
 
 async function saveNoteText(newNote, id) {
   const metadataId = buildMetadataId();
+
   if (newNote === null) return;
 
   await OBR.scene.items.updateItems([id], (items) => {

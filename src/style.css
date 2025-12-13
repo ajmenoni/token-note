@@ -100,7 +100,6 @@
 
 #quill-toolbar {
   background-color: #1a1a1a;
-  /* border-bottom: 1px solid #333; */
   display: flex;
   gap: 4px;
   padding: 4px 0;
