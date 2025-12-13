@@ -8,7 +8,7 @@ export function setupContextMenu() {
     id: `${ID}/token-note`,
     icons: [
       {
-        icon: "/paper-note.svg",
+        icon: `${import.meta.env.BASE_URL}paper-note.svg`,
         label: "Token Note",
         filter: {
           every: [{ key: "layer", value: "CHARACTER" }],
