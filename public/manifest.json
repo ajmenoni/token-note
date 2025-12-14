@@ -4,5 +4,5 @@
   "manifest_version": 1,
   "icon": "/token-note/token-note.png",
   "background_url": "/token-note/background.html",
-  "description": "Add quick rich text notes to items on the Character layer."
+  "description": "Add quick text notes to items on the Character layer."
 }
