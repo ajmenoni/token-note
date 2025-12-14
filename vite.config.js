@@ -5,13 +5,12 @@ import react from "@vitejs/plugin-react";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // Serve from site root
-  base: "/",
+  base: "/token-note/",
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "index.html"), // Your main React entry
-        background: resolve(__dirname, "background.html"), // Copy background.html as a separate entry
+        main: resolve(__dirname, "index.html"),
+        background: resolve(__dirname, "background.html"),
       },
     },
   },
