@@ -34,7 +34,7 @@ function openPopover(popoverId, itemId, elementId) {
 }
 
 function buildPopoverUrl(itemId) {
-  return `/popover.html?itemId=${itemId}`;
+  return `/token-note/popover.html?itemId=${itemId}`;
 }
 
 // **init
