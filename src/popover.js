@@ -6,11 +6,11 @@ let quill = null;
 const EXTENSION_ID = "com.token-note";
 
 function buildPopoverId() {
-  return `${EXTENSION_ID}/popover`;
+  return `${EXTENSION_ID}/token-note/popover`;
 }
 
 function buildMetadataId() {
-  return `${EXTENSION_ID}/metadata`;
+  return `${EXTENSION_ID}/token-note/metadata`;
 }
 
 // **api
