@@ -5,7 +5,8 @@ import react from "@vitejs/plugin-react";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/token-note/",
+  // Serve from site root
+  base: "/",
   build: {
     rollupOptions: {
       input: {
